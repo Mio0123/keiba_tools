@@ -1,0 +1,6 @@
+django
+mysqlclient
+python-dotenv
+dj-database-url
+gunicorn
+whitenoise

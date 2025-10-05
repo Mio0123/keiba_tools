@@ -1,0 +1,26 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: keiba_db
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306" # PCの3307番ポートをコンテナの3306番に接続
+    env_file:
+      - ./.env
+
+  web:
+    build: .
+    container_name: keiba_web
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - ./.env
+
+volumes:
+  mysql_data:

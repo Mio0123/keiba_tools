@@ -1,0 +1,9 @@
+# Environments
+.env
+
+# Django
+__pycache__/
+*.pyc
+
+# Docker
+mysql_data/
