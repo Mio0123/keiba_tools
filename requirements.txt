@@ -1,5 +1,5 @@
 django
-mysqlclient
+psycopg2-binary
 python-dotenv
 dj-database-url
 gunicorn
