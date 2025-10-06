@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # 依存関係をインストール
+pip install --upgrade pip
 pip install -r requirements.txt
 
-# CSSなどを収集
+# Djangoのビルドコマンドを実行
 python3 manage.py collectstatic --noinput
-
-# データベースのマイグレーションを実行
 python3 manage.py migrate
