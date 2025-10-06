@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>投票受付 - {{ race.name }}</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        input { width: 60px; }
+    </style>
+</head>
+<body>
+    <h1>投票受付</h1>
+    <h2>{{ race.held_date }} - {{ race.name }}</h2>
+    <p>一口: {{ race.stake_per_unit }}円</p>
+
+    <form method="post">
+        {% csrf_token %}
+        <h3>単勝投票</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>馬番</th>
+                    <th>馬名</th>
+                    <th>口数</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for horse in race.horses.all %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ horse.name }}</td>
+                        <td>
+                            <input type="number" name="units_{{ horse.id }}" min="0" value="0">
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <br>
+        <button type="submit">この内容で投票を記録する</button>
+    </form>
+    <br>
+    <a href="{% url 'race_list' %}">レース一覧に戻る</a>
+</body>
+</html>

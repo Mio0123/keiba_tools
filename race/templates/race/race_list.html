@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>受付レース一覧</title>
+</head>
+<body>
+    <h1>受付中のレース一覧</h1>
+    {% if races %}
+        <ul>
+            {% for race in races %}
+                <li>
+                    <a href="{% url 'betting_form' race.id %}">
+                        {{ race.held_date }} - {{ race.name }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>現在、受付中のレースはありません。</p>
+        <p>（管理画面でレースを作成し、ステータスを「受付中」に設定してください）</p>
+    {% endif %}
+    <hr>
+    <a href="/admin/">Django管理画面に戻る</a>
+</body>
+</html>
