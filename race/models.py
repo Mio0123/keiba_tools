@@ -9,6 +9,13 @@ class Horse(models.Model):
     def __str__(self):
         return self.name
 
+class Bettor(models.Model):
+    """投票者モデル"""
+    name = models.CharField("投票者名", max_length=100, unique=True)
+
+    def __str__(self):
+        return self.name
+
 class Race(models.Model):
     """レースモデル"""
     class Status(models.TextChoices):
@@ -42,6 +49,7 @@ class Bet(models.Model):
         TRIO = 'TRO', '3連複'
         
     race = models.ForeignKey(Race, on_delete=models.CASCADE, verbose_name="レース")
+    bettor = models.ForeignKey(Bettor, on_delete=models.CASCADE, verbose_name="投票者")
     bet_type = models.CharField("賭け式", max_length=3, choices=BetType.choices)
     units = models.PositiveIntegerField("口数")
     

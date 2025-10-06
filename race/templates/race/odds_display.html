@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>オッズ・投票状況 - {{ race.name }}</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { border-collapse: collapse; margin-top: 1em; width: 100%; max-width: 600px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .total-info { background-color: #f2f2f2; padding: 10px; border: 1px solid #ddd; margin-bottom: 20px; }
+        .total-info strong { display: inline-block; width: 120px; }
+    </style>
+</head>
+<body>
+    <h1>オッズ・投票状況</h1>
+    <h2>{{ race.held_date }} - {{ race.name }}</h2>
+
+    <div class="total-info">
+        <strong>レース総売上:</strong> {{ total_sales | floatformat:0 }}円<br>
+        <strong>レース総口数:</strong> {{ total_bet_units }}口
+    </div>
+
+    <h3>単勝オッズ</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>馬名</th>
+                <th>投票口数</th>
+                <th>投票総額</th>
+                <th>単勝オッズ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for data in horse_data %}
+            <tr>
+                <td>{{ data.horse.name }}</td>
+                <td>{{ data.win_units }}口</td>
+                <td>{{ data.win_sales | floatformat:0 }}円</td>
+                <td>{{ data.odds }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <br>
+    <p>
+        <a href="{% url 'betting_form' race.id %}">このレースの投票受付画面へ</a><br>
+        <a href="{% url 'race_list' %}">レース一覧に戻る</a>
+    </p>
+</body>
+</html>

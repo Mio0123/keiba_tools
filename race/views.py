@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import HttpResponse
 from .models import Race, Bet
+from django.db.models import Sum
 
 # デバッグ用のヘルスチェック（これはそのまま残します）
 def health_check(request):
@@ -43,3 +44,48 @@ def betting_form(request, race_id):
         'race': race,
     }
     return render(request, 'race/betting_form.html', context)
+
+# レースのオッズ表示ビュー
+def odds_display(request, race_id):
+    race = get_object_or_404(Race, pk=race_id)
+
+    # 1. レースの総売上と総口数を計算
+    total_bet_units_agg = Bet.objects.filter(race=race).aggregate(total_units=Sum('units'))
+    total_bet_units = total_bet_units_agg['total_units'] or 0
+    total_sales = total_bet_units * race.stake_per_unit
+
+    # 2. 払戻原資を計算 (控除率25%と仮定)
+    payout_pool = total_sales * 0.75
+
+    # 3. 各出走馬の単勝オッズと投票状況を計算
+    horse_data = []
+    for horse in race.horses.all().order_by('name'):
+        # この馬の単勝への総投票口数を取得
+        win_units_agg = Bet.objects.filter(
+            race=race, horse1=horse, bet_type=Bet.BetType.WIN
+        ).aggregate(total=Sum('units'))
+        win_units_on_horse = win_units_agg['total'] or 0
+        win_sales_on_horse = win_units_on_horse * race.stake_per_unit
+
+        # オッズを計算
+        odds = 0  # 投票がない場合のデフォルト値
+        if win_sales_on_horse > 0:
+            odds = payout_pool / win_sales_on_horse
+            # 1.5倍を下回らないように補正
+            if odds < 1.5:
+                odds = 1.5
+        
+        horse_data.append({
+            'horse': horse,
+            'win_units': win_units_on_horse,
+            'win_sales': win_sales_on_horse,
+            'odds': round(odds, 1) if odds > 0 else '---' # 投票がなければ '---' と表示
+        })
+
+    context = {
+        'race': race,
+        'total_sales': total_sales,
+        'total_bet_units': total_bet_units,
+        'horse_data': horse_data,
+    }
+    return render(request, 'race/odds_display.html', context)

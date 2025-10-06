@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Horse, Race, Bet, InitialOdds
+from .models import Horse, Race, Bet, InitialOdds, Bettor
 
 # レース登録画面で初期オッズを同時に入力できるようにする設定
 class InitialOddsInline(admin.TabularInline):
@@ -10,6 +10,10 @@ class InitialOddsInline(admin.TabularInline):
 class HorseAdmin(admin.ModelAdmin):
     list_display = ('name', 'created_at')
     search_fields = ('name',)
+    
+@admin.register(Bettor)
+class BettorAdmin(admin.ModelAdmin):
+    list_display = ('name',)
 
 @admin.register(Race)
 class RaceAdmin(admin.ModelAdmin):
@@ -20,5 +24,5 @@ class RaceAdmin(admin.ModelAdmin):
 
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):
-    list_display = ('race', 'bet_type', 'units', 'horse1', 'horse2', 'horse3')
-    list_filter = ('race',)
+    list_display = ('race', 'bettor', 'bet_type', 'units', 'horse1', 'horse2', 'horse3')
+    list_filter = ('race', 'bettor')
