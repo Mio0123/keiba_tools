@@ -1,9 +1,6 @@
 from django.shortcuts import render
-
-# Create your views here.
-# race/views.py
 from django.http import HttpResponse
 
-# ... ファイルの末尾に追加 ...
+# このファイルには、データベースを使わないシンプルなビューのみを定義します
 def health_check(request):
-    return HttpResponse("Hello, Vercel! Django is running correctly.")
+    return HttpResponse("Hello, Vercel! Health check from race.views is OK.")
